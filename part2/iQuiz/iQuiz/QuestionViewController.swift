@@ -31,21 +31,22 @@ class QuestionViewController: UIViewController {
         for question in questions {
             let title = question["text"] as! String
             questionList.append(title)
-            
             let choices = question["answers"] as! [AnyObject]
             options.append(choices)
-            
             let answer = question["answer"] as! String
             rightAnswers.append(answer)
         }
-        let possibleAnswers = options[currentQuestion] as! NSArray
-        print(possibleAnswers)
-        
-        questionText.text = questionList[currentQuestion]
-        button1.setTitle((possibleAnswers[0] as? String), forState: UIControlState.Normal)
-        button2.setTitle((possibleAnswers[1] as? String), forState: UIControlState.Normal)
-        button3.setTitle((possibleAnswers[2] as? String), forState: UIControlState.Normal)
-        button4.setTitle((possibleAnswers[3] as? String), forState: UIControlState.Normal)
+     
+        print(currentQuestion)
+        if (currentQuestion < questionList.count) {
+            let possibleAnswers = options[currentQuestion] as NSArray
+            questionText.text = questionList[currentQuestion]
+            button1.setTitle((possibleAnswers[0] as! String), forState: UIControlState.Normal)
+            button2.setTitle((possibleAnswers[1] as! String), forState: UIControlState.Normal)
+            button3.setTitle((possibleAnswers[2] as! String), forState: UIControlState.Normal)
+            button4.setTitle((possibleAnswers[3] as! String), forState: UIControlState.Normal)
+            
+        }
     }
     
     override func didReceiveMemoryWarning() {
@@ -55,16 +56,22 @@ class QuestionViewController: UIViewController {
     
     
     @IBAction func submit(sender: AnyObject) {
-        let answerViewController = self.storyboard!.instantiateViewControllerWithIdentifier("answerView") as! AnswerViewController
+        self.performSegueWithIdentifier("showAnswerView", sender: nil)
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
+        let answerViewController = segue.destinationViewController as! AnswerViewController
         if (selectedAnswer == rightAnswers[currentQuestion]) {
             answerViewController.correct = true
-            totalCorrect = totalCorrect + 1
-            answerViewController.totalCorrect = totalCorrect
         } else {
             answerViewController.correct = false
         }
-        self.presentViewController(answerViewController, animated: false, completion: nil)
-
+        answerViewController.questions = questions
+        answerViewController.questionList = questionList
+        let possibleAnswers = options[currentQuestion] as NSArray
+        answerViewController.correctAnswer = possibleAnswers[Int(rightAnswers[currentQuestion])! - 1] as! String
+        answerViewController.currentQuestion = currentQuestion + 1
+        answerViewController.totalCorrect = totalCorrect
     }
     
     @IBAction func button1(sender: AnyObject) {
@@ -86,6 +93,7 @@ class QuestionViewController: UIViewController {
     
     @IBAction func back(sender: AnyObject) {
         let viewController = self.storyboard!.instantiateViewControllerWithIdentifier("ViewController") as! ViewController
+        self.presentViewController(viewController, animated: false, completion: nil)
     }
 
 }

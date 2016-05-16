@@ -13,8 +13,9 @@ class AnswerViewController: UIViewController{
     
     var questions = []
     var questionTitle : String = ""
+    var questionList : [String] = []
     var currentQuestion : Int = 0
-    var usersAnswer : String = ""
+    var correctAnswer : String = ""
     var answer : String = ""
     var totalCorrect : Int = 0
     var correct : Bool = false
@@ -33,8 +34,8 @@ class AnswerViewController: UIViewController{
         } else {
             userAnswer.text = "Wrong!"
         }
-        question.text = questionTitle
-        rightAnswer.text = "The right answer is: " + usersAnswer
+        question.text = questionList[currentQuestion - 1]
+        rightAnswer.text = "The right answer is: " + correctAnswer
     }
     
     override func didReceiveMemoryWarning() {
@@ -43,18 +44,25 @@ class AnswerViewController: UIViewController{
     }
     
     @IBAction func next(sender: AnyObject) {
-        if (questions != "" ) {
-            let nextQuestionView = self.storyboard!.instantiateViewControllerWithIdentifier("questionView") as! QuestionViewController
-            nextQuestionView.totalCorrect = totalCorrect
-            nextQuestionView.currentQuestion = currentQuestion + 1
-            nextQuestionView.questions = self.questions
-            self.presentViewController(nextQuestionView, animated: false, completion: nil)
+        if (currentQuestion < questionList.count) {
+            self.performSegueWithIdentifier("showQuestionView", sender: nil)
         } else {
-            let nextQuestionView = self.storyboard!.instantiateViewControllerWithIdentifier("resultsView") as! ResultsViewController
-            nextQuestionView.totalCorrect = totalCorrect
-            nextQuestionView.currentQuestion = currentQuestion + 1
-            self.presentViewController(nextQuestionView, animated: false, completion: nil)
+            self.performSegueWithIdentifier("showResultsView", sender: nil)
         }
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
+        if (currentQuestion < questionList.count) {
+            let nextQuestionView = segue.destinationViewController as! QuestionViewController
+            nextQuestionView.totalCorrect = totalCorrect
+            nextQuestionView.currentQuestion = currentQuestion
+            nextQuestionView.questions = questions
+        } else {
+            let nextQuestionView = segue.destinationViewController as! ResultsViewController
+            nextQuestionView.totalCorrect = totalCorrect
+            nextQuestionView.currentQuestion = currentQuestion
+        }
+
     }
     
 }

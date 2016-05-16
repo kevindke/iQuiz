@@ -10,6 +10,8 @@
 		AE1679C81CE483FD00AC9907 /* QuestionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1679C71CE483FD00AC9907 /* QuestionViewController.swift */; };
 		AE1679CA1CE4935700AC9907 /* AnswerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1679C91CE4935700AC9907 /* AnswerViewController.swift */; };
 		AE1679CC1CE4A47200AC9907 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = AE1679CB1CE4A47200AC9907 /* Default-568h@2x.png */; };
+		AE19D9D21CE9DC8E0009FB01 /* backup.json in Resources */ = {isa = PBXBuildFile; fileRef = AE19D9D11CE9DC8E0009FB01 /* backup.json */; };
+		AE19D9D41CE9F9620009FB01 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE19D9D31CE9F9620009FB01 /* SettingsViewController.swift */; };
 		AE6F2A1E1CDAB35900E328FB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6F2A1D1CDAB35900E328FB /* AppDelegate.swift */; };
 		AE6F2A201CDAB35900E328FB /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6F2A1F1CDAB35900E328FB /* ViewController.swift */; };
 		AE6F2A231CDAB35900E328FB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE6F2A211CDAB35900E328FB /* Main.storyboard */; };
@@ -23,6 +25,8 @@
 		AE1679C71CE483FD00AC9907 /* QuestionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuestionViewController.swift; sourceTree = "<group>"; };
 		AE1679C91CE4935700AC9907 /* AnswerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnswerViewController.swift; sourceTree = "<group>"; };
 		AE1679CB1CE4A47200AC9907 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		AE19D9D11CE9DC8E0009FB01 /* backup.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = backup.json; sourceTree = "<group>"; };
+		AE19D9D31CE9F9620009FB01 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		AE6F2A1A1CDAB35900E328FB /* iQuiz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iQuiz.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE6F2A1D1CDAB35900E328FB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AE6F2A1F1CDAB35900E328FB /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -67,7 +71,9 @@
 			children = (
 				AE6F2A1D1CDAB35900E328FB /* AppDelegate.swift */,
 				AE6F2A1F1CDAB35900E328FB /* ViewController.swift */,
+				AE19D9D11CE9DC8E0009FB01 /* backup.json */,
 				AE6F2A211CDAB35900E328FB /* Main.storyboard */,
+				AE19D9D31CE9F9620009FB01 /* SettingsViewController.swift */,
 				AE8D84771CE95C4600921A31 /* ResultsViewController.swift */,
 				AE1679C71CE483FD00AC9907 /* QuestionViewController.swift */,
 				AE1679C91CE4935700AC9907 /* AnswerViewController.swift */,
@@ -140,6 +146,7 @@
 			files = (
 				AE6F2A281CDAB35900E328FB /* LaunchScreen.storyboard in Resources */,
 				AE1679CC1CE4A47200AC9907 /* Default-568h@2x.png in Resources */,
+				AE19D9D21CE9DC8E0009FB01 /* backup.json in Resources */,
 				AE6F2A251CDAB35900E328FB /* Assets.xcassets in Resources */,
 				AE6F2A231CDAB35900E328FB /* Main.storyboard in Resources */,
 			);
@@ -154,6 +161,7 @@
 			files = (
 				AE6F2A321CDC0CCA00E328FB /* TableViewCell.swift in Sources */,
 				AE6F2A201CDAB35900E328FB /* ViewController.swift in Sources */,
+				AE19D9D41CE9F9620009FB01 /* SettingsViewController.swift in Sources */,
 				AE1679CA1CE4935700AC9907 /* AnswerViewController.swift in Sources */,
 				AE1679C81CE483FD00AC9907 /* QuestionViewController.swift in Sources */,
 				AE6F2A1E1CDAB35900E328FB /* AppDelegate.swift in Sources */,

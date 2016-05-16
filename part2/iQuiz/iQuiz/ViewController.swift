@@ -20,68 +20,89 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     var mathQuestions = []
     var scienceQuestions = []
     var marvelQuestions = []
+    var jsonData: [AnyObject] = []
+    
+    let defaults = NSUserDefaults.standardUserDefaults()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         tableView.dataSource = self
         tableView.delegate = self
-        retrieveOnline("http://tednewardsandbox.site44.com/questions.json")
+        fetchData()
         
     }
     
-    private func retrieveOnline(getUrl : String) {
-        let getURL: NSURL = NSURL(string: "http://tednewardsandbox.site44.com/questions.json")!
-        let urlRequest: NSMutableURLRequest = NSMutableURLRequest(URL: getURL)
-        getHTTP(urlRequest) { (data, error) -> Void in
-            if error != nil {
-                print("httpGet error:")
-                print(error)
-            } else {
-                let jsonData = data.dataUsingEncoding(NSUTF8StringEncoding);
-                do{
-                    let json = try NSJSONSerialization.JSONObjectWithData(jsonData!, options: .AllowFragments)
-                    if let jsonObject = (json as? NSArray){
-                        var i = 0;
-                        for quiz in jsonObject {
-                            let title = quiz["title"] as! String;
-                            print(self.categories[i])
-                            self.categories[i] = title;
-                            let description = quiz["desc"] as! String;
-                            self.categoryDescriptions[i] = description;
-                            switch title {
-                            case "Science!":
-                                self.scienceQuestions = quiz["questions"] as! [AnyObject]
-                            case "Marvel Super Heroes":
-                                self.marvelQuestions = quiz["questions"] as! [AnyObject]
-                            case "Mathematics":
-                                self.mathQuestions = quiz["questions"] as! [AnyObject]
-                            default:
-                                print("data retrieve error: cannot find quizzes");
-                            }
-                            i = i+1;
-                        }
+    func fetchData() {
+        let requestURL: NSURL = NSURL(string: "http://tednewardsandbox.site44.com/questions.json")!
+        let urlRequest: NSMutableURLRequest = NSMutableURLRequest(URL: requestURL)
+        let session = NSURLSession.sharedSession();
+        let task = session.dataTaskWithRequest(urlRequest) {
+            (data, response, error) -> Void in
+            
+            let httpResponse : NSHTTPURLResponse
+            if response != nil {
+                httpResponse = response as! NSHTTPURLResponse
+                let statusCode = httpResponse.statusCode
+                
+                if statusCode == 200 {
+                    do {
+                        
+                        self.jsonData = try NSJSONSerialization.JSONObjectWithData(data!, options: .AllowFragments) as! [AnyObject]
+                        self.defaults.setObject(self.jsonData, forKey: "currentJSON")
+                        self.processJSON(self.jsonData)
+
+                    } catch {
+                        print("Error with Json: \(error)")
                     }
-                    print(json)
-                    print(self.scienceQuestions)
-                }catch {
-                    print("Error with Json: \(error)")
+                    
+                } else {
+                    self.retrieveBackupJSON()
+                }
+            }
+        }
+        
+        task.resume()
+    }
+    
+    func processJSON(json: AnyObject) {
+        if let jsonObject = (json as? NSArray){
+            for var i = 0; i < jsonObject.count; i++ {
+                let title = jsonObject[i]["title"] as! String;
+                self.categories[i] = title;
+                let description = jsonObject[i]["desc"] as! String;
+                self.categoryDescriptions[i] = description;
+                switch title {
+                case "Science!":
+                    self.scienceQuestions = jsonObject[i]["questions"] as! [AnyObject]
+                case "Marvel Super Heroes":
+                    self.marvelQuestions = jsonObject[i]["questions"] as! [AnyObject]
+                case "Mathematics":
+                    self.mathQuestions = jsonObject[i]["questions"] as! [AnyObject]
+                default:
+                    print("Data retrieve error: cannot find quizzes");
                 }
             }
         }
     }
     
-    func getHTTP(request: NSURLRequest!, callback: (String, String?) -> Void) {
-        let session = NSURLSession.sharedSession();
-        let task = session.dataTaskWithRequest(request) {
-            (data, response, error) -> Void in if error != nil {
-                callback("", error!.localizedDescription)
-            } else {
-                let result = NSString(data: data!, encoding: NSASCIIStringEncoding)!;
-                callback(result as String, nil)
-            }
+    func retrieveBackupJSON() {
+        print("hi")
+        let path = NSBundle.mainBundle().pathForResource("backup", ofType: "json")
+        let contentsOfLocalJSON = NSData.init(contentsOfFile: path!)
+        do{
+            
+            let json = try NSJSONSerialization.JSONObjectWithData(contentsOfLocalJSON!, options: .AllowFragments) as? NSArray
+            
+            self.defaults.setObject(json, forKey: "currentJSON")
+            self.processJSON(json!)
+            
+            
+        }catch {
+            print("Error retrieving JSON file")
         }
-        task.resume()
+
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -95,15 +116,11 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = self.tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TableViewCell
-        print(indexPath.row)
         cell.photo.image = images[indexPath.row]
         cell.category.text = categories[indexPath.row]
         cell.subtitle.text = categoryDescriptions[indexPath.row]
         return cell
     }
-    
-    var selectedQuiz: [Array<String>] = []
-    var selectedQuestions: [NSDictionary] = []
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let secondViewController = self.storyboard!.instantiateViewControllerWithIdentifier("questionView") as! QuestionViewController
@@ -122,12 +139,9 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         self.presentViewController(secondViewController, animated: true, completion: nil)
     }
     
-    
     @IBAction func settingsButton(sender: UIBarButtonItem) {
-        let alert = UIAlertController(title: "Settings", message: "settings will go here", preferredStyle:UIAlertControllerStyle.Alert)
-        
-        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
-        self.presentViewController(alert, animated: true, completion: nil)
+        let settingsViewController = self.storyboard!.instantiateViewControllerWithIdentifier("settingsView") as! SettingsViewController
+        self.presentViewController(settingsViewController, animated: true, completion: nil)
     }
 }
 
